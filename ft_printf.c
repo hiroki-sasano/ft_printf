@@ -7,17 +7,17 @@
 
 typedef enum
 {
-	FORMAT_CHAR,      // %c: 文字
-	FORMAT_STRING,    // %s: 文字列
-	FORMAT_POINTER,   // %p: ポインタ（16進数）
-	FORMAT_DECIMAL,   // %d: 10進数（符号付き）
-	FORMAT_INTEGER,   // %i: 整数（符号付き）
-	FORMAT_UNSIGNED,  // %u: 10進数（符号なし）
-	FORMAT_HEX_LOWER, // %x: 16進数（小文字）
-	FORMAT_HEX_UPPER, // %X: 16進数（大文字）
-	FORMAT_PERCENT,   // %%: パーセント記号
-	FORMAT_INVALID
-}					ArgType;
+	F_CHAR,      // %c: 文字
+	F_STR,    // %s: 文字列
+	F_PTR,   // %p: ポインタ（16進数）
+	F_DEC,   // %d: 10進数（符号付き）
+	F_INT,   // %i: 整数（符号付き）
+	F_UINT,  // %u: 10進数（符号なし）
+	F_HEX_LOW, // %x: 16進数（小文字）
+	F_HEX_UP, // %X: 16進数（大文字）
+	F_PCT,   // %%: パーセント記号
+	F_INVALID
+}						ArgType;
 
 typedef struct
 {
@@ -30,30 +30,30 @@ typedef struct
 	int				precision;
 	ArgType			format;
 	char			*str;
-	size_t			inc_count;
+	size_t			str_count;
 }					FormatFrags;
 
 void	ft_spec_type(FormatFrags *frags, char *type)
 {
 	if (type == 'c')
-		frags->format = FORMAT_CHAR;
+		frags->format = F_CHAR;
 	else if (type == 's')
-		frags->format = FORMAT_STRING;
+		frags->format = F_STR;
 	else if (type == 'p')
-		frags->format = FORMAT_POINTER;
+		frags->format = F_PTR;
 	else if (type == 'd')
-		frags->format = FORMAT_DECIMAL;
+		frags->format = F_DEC;
 	else if (type == 'i')
-		frags->format = FORMAT_INTEGER;
+		frags->format = F_INT;
 	else if (type == 'u')
-		frags->format = FORMAT_UNSIGNED;
+		frags->format = F_UINT;
 	else if (type == 'x')
-		frags->format = FORMAT_HEX_LOWER;
+		frags->format = F_HEX_LOW;
 	else if (type == 'X')
-		frags->format = FORMAT_HEX_UPPER;
+		frags->format = F_HEX_UP;
 	else if (type == '%')
-		frags->format = FORMAT_PERCENT;
-	frags->format = FORMAT_INVALID;
+		frags->format = F_PCT;
+	frags->format = F_INVALID;
 	return ;
 }
 
@@ -82,6 +82,56 @@ size_t	ft_parse_width(FormatFrags *frags, const char *format, size_t start)
 	return (i);
 }
 
+static int	ft_parse_digits(const char *str, int *i, int sign, int *overflow)
+{
+	int	result;
+
+	result = 0;
+	while (str[*i] >= '0' && str[*i] <= '9')
+	{
+		if (result > INT_MAX / 10 || (result == INT_MAX / 10 && ((!sign
+						&& (str[*i] - '0') > 7)
+					|| (sign && (str[*i] - '0') > 8))))
+		{
+			*overflow = 1;
+			if (sign)
+				return (INT_MIN);
+			return (INT_MAX);
+		}
+		result = result * 10 + (str[*i] - '0');
+		(*i)++;
+	}
+	return (result);
+}
+
+int	ft_my_atoi(const char *str)
+{
+	int	i;
+	int	result;
+	int	sign;
+	int	overflow;
+
+	i = 0;
+	result = 0;
+	sign = 0;
+	overflow = 0;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
+		|| str[i] == '\f' || str[i] == '\r')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = 1;
+		i++;
+	}
+	result = ft_parse_digits(str, &i, sign, &overflow);
+	if (overflow)
+		return (result);
+	if (sign)
+		return (-result);
+	return (result);
+}
+
 #include <limits.h>
 #include <stdlib.h>
 
@@ -102,9 +152,9 @@ size_t	ft_parse_prec(FormatFrags *frags, const char *format, size_t start)
 	while (format[start + i] >= 0 && format[start + i])
 		temp[j++] = format[start + i];
 	temp[i] = '\0';
-	if (ft_atoi(temp) > INT_MAX)
+	if (ft_my_atoi(temp) > INT_MAX)
 		frags->width = 0;
-	frags->width = ft_atoi(temp);
+	frags->width = ft_my_atoi(temp);
 	free(temp);
 	return (i);
 }
@@ -149,102 +199,239 @@ void	ft_reset_format_spec(FormatFrags *frags)
 	frags->width = 0;
 	frags->precision = 0;
 	free(frags->str);
-	frags->inc_count = 0;
+	frags->str_count = 0;
 	return ;
 }
-char *ft_conv_char(char c)
+char	*ft_conv_char(char c)
 {
-  char *str;
+	char	*str;
 
 	str = ft_calloc(2, sizeof(char));
 	if (str)
 		str[0] = c;
-  
-    return str;
+	return (str);
 }
 
-char *ft_convert_str(char *str)
+char	*ft_convert_str(char *str)
 {
-  if (str)
-    return str;
-
-  return NULL;
+	if (str)
+		return (str);
+	return (NULL);
 }
 
- char *ft_convert_decimal(char *str)
- {
-    return (ft_atoi(str));
- }
-
- #include <stdlib.h>
-
- static size_t	ft_uint_len(unsigned int n)
- {
-   size_t	len = 1;
- 
-   while (n >= 10)
-   {
-     n /= 10;
-     len++;
-   }
-   return (len);
- }
- 
- char	*ft_utoa(unsigned int n)
- {
-   size_t		len = ft_uint_len(n);
-   char		*str;
- 
-   str = (char *)malloc(len + 1); // +1 for '\0'
-   if (!str)
-     return (NULL);
-   str[len] = '\0';
-   while (len-- > 0)
-   {
-     str[len] = (n % 10) + '0';
-     n /= 10;
-   }
-   return (str);
- }
- 
-static char *ft_convert_unsigned(unsigned int i)
+char	*ft_convert_decimal(char *str)
 {
-    return (ft_utoa(i));
+	return (ft_my_atoi(str));
 }
 
-static char *ft_convert_pointer(char *)
+#include <stdlib.h>
+
+static size_t	ft_uint_len(unsigned int n)
 {
+	size_t	len;
 
+	len = 1;
+	while (n >= 10)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len);
 }
 
-size_t	ft_format_tostr(void)
+char	*ft_utoa(unsigned int n)
 {
+	size_t	len;
+	char	*str;
+
+	len = ft_uint_len(n);
+	str = (char *)malloc(len + 1); // +1 for '\0'
+	if (!str)
+		return (NULL);
+	str[len] = '\0';
+	while (len-- > 0)
+	{
+		str[len] = (n % 10) + '0';
+		n /= 10;
+	}
+	return (str);
 }
+
+static char	*ft_convert_unsigned(unsigned int i)
+{
+	return (ft_utoa(i));
+}
+
+#include <stdlib.h>
+
+char	*ft_utoa_base(uintptr_t n, const char *base)
+{
+	char		*str;
+	size_t		base_len;
+	size_t		len;
+	uintptr_t	tmp;
+
+	base_len = 0;
+	while (base[base_len])
+		base_len++;
+	len = 1;
+	tmp = n;
+	while (tmp >= base_len)
+	{
+		tmp /= base_len;
+		len++;
+	}
+	str = (char *)malloc(len + 1);
+	if (!str)
+		return (NULL);
+	str[len] = '\0';
+	while (len--)
+	{
+		str[len] = base[n % base_len];
+		n /= base_len;
+	}
+	return (str);
+}
+
+#include <stdint.h>
+static char	*ft_convert_pointer(void *ptr)
+{
+	uintptr_t	addr;
+	char		*hex;
+	char		*result;
+
+	addr = (uintptr_t)ptr;
+	hex = ft_utoa_base(addr, "0123456789abcdef");
+	result = ft_strjoin("0x", hex);
+	free(hex);
+	return (result);
+}
+
+#include <stdlib.h>
+#include <ctype.h>
+
+static char	*str_to_upper(const char *s)
+{
+	int		i = 0;
+	char	*res = malloc(ft_strlen(s) + 1);
+	if (!res)
+		return (NULL);
+	while (s[i])
+	{
+		res[i] = ft_toupper((unsigned char)s[i]);
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
+}
+
+static char	*ft_convert_hex(unsigned int value, ArgType type)
+{
+	char	*hex;
+	char	*result;
+
+	if (type == F_HEX_LOW)
+		hex = ft_utoa_base(value, "0123456789abcdef");
+	else
+		hex = ft_utoa_base(value, "0123456789ABCDEF");
+	if (!hex)
+		return (NULL);
+	return (hex);
+}
+
+void	ft_apply_prcn(FormatFrags *frags)
+{
+	char	*zero;
+	char	*result;
+
+	if (frags->precision <= 0)
+		return ;
+	zero = (char *)malloc(sizeof(char) * (frags->precision + 1));
+	if (!zero)
+		return ;
+	ft_memset(zero, '0', frags->precision);
+	zero[frags->precision] = '\0';
+	result = ft_strjoin(zero, frags->str);
+	free(zero);
+	if (!result)
+		return ;
+	free(frags->str);
+	frags->str = ft_strdup(result);
+	free(result);
+	frags->str_count = ft_strlen(frags->str);
+}
+
+void ft_left_align(FormatFrags *frags)
+{
+	size_t s_size;
+	char *temp;
+	char *result;
+	
+	s_size = 0;
+	if (frags->precision)
+		ft_apply_prcn(frags);
+	if (frags->width > ft_strlen(frags->str))
+		s_size = frags->width - ft_strlen(frags->str);
+	temp = (char *)malloc(sizeof(char) * (s_size + 1));
+	if (!temp)
+		return ;
+	ft_memset(temp, ' ', s_size);
+	temp[s_size] = '\0';;
+	result = ft_strjoin(frags->str, temp);
+	free(temp);
+	if (!result)
+		return;
+	free(frags->str);
+	frags->str = result;
+	frags->str_count = ft_strlen(frags->str);
+}
+
+static void	ft_apply(FormatFrags *frags)
+{
+	if (frags->f_minus)
+		ft_left_align(frags);
+	if (frags->f_zero && (!frags->f_minus))
+		ft_zero_pad(frags);
+	if (frags->f_plus && (frags->format == F_DEC || frags->format == F_INT))
+		ft_plus_join(frags);
+	if (frags->f_spase)
+		ft_spase_join(frags);
+	if (frags->f_hash)
+		ft_hash_join(frags);
+	if (frags->width && (!frags->f_minus || !frags->f_zero))
+		ft_apply_width(frags);
+	if (frags->precision && (!frags->f_minus || !frags->width))
+		ft_apply_prcn(frags);
+	
+	return ;
+}
+
 void	ft_conv(FormatFrags *frags, va_list(arg))
 {
-	char			*str;
+	char	*str;
 
-  str = NULL;
-	if (frags->format == FORMAT_CHAR)
-	  str = ft_convert_char((char)va_arg(arg, int));
-	else if (frags->format == FORMAT_STRING)
+	str = NULL;
+	if (frags->format == F_CHAR)
+		str = ft_convert_char((char)va_arg(arg, int));
+	else if (frags->format == F_STR)
 		str = ft_convert_str(va_arg(arg, char *));
-	else if (frags->format == FORMAT_DECIMAL)
-    str = ft_convert_decimal(va_arg(arg, int));
-	else if (frags->format == FORMAT_UNSIGNED)
-    str = ft_convert_unsigned(va_arg(arg, unsigned int));
-	else if (frags->format == FORMAT_POINTER)
-  str = ft_convert_pointer(va_arg(arg, void *));
-	else if (frags->format == FORMAT_HEX_LOWER
-		|| frags->format == FORMAT_HEX_UPPER)
-    str = ft_convert_hex(va_arg(arg, unsigned int), frags->format);
-	else if (frags->format == FORMAT_PERCENT)
-    str = ft_strdup("%");
-  
-  if (str)
-    frags->str = str;
-  str = ft_strdup("");
-  ft_apply(frags);
+	else if (frags->format == F_DEC)
+		str = ft_convert_decimal(va_arg(arg, int));
+	else if (frags->format == F_UINT)
+		str = ft_convert_unsigned(va_arg(arg, unsigned int));
+	else if (frags->format == F_PTR)
+		str = ft_convert_pointer(va_arg(arg, void *));
+	else if (frags->format == F_HEX_LOW
+		|| frags->format == F_HEX_UP)
+		str = ft_convert_hex(va_arg(arg, unsigned int), frags->format);
+	else if (frags->format == F_PCT)
+		str = ft_strdup("%");
+	if (str)
+		frags->str = str;
+	str = ft_strdup("");
+	ft_apply(frags);
+
+	return ;
 }
 
 void				ft_putarg(FormatFrags frags);
@@ -270,9 +457,6 @@ int	ft_printf_bonus(va_list arg, const char *format)
 	size_t		i;
 	char		*s;
 	va_list		arg;
-	size_t		f_size;
-	size_t		i;
-	char		*s;
 
 	i = 0;
 	f_size = ft_strlen(format);
@@ -284,18 +468,24 @@ int	ft_printf_bonus(va_list arg, const char *format)
 			ft_parse_format(&frags, format, i, f_size);
 			ft_conv(&frags, arg);
 			ft_putstr(frags.str);
-			i += frags.inc_count;
+			i += frags.str_count;
 		}
 		if (format[i] != '%')
-			write(1, format[i], 1);
-      //write戻り値確認
+			if (!write(1, format[i], 1))
+				return -1;
+			else 
+				size_t result += write(); 
+		// write戻り値確認
 		i++;
 	}
-	return (i);
+	return (result);
 }
 
+/********** 引数が　０の場合　要検討 */
 int	ft_printf(const char *format, ...)
 {
+	va_list	arg;
+
 	if (!format)
 		return (0);
 #ifdef BONUS_MODE
@@ -500,15 +690,15 @@ unsigned int• %u Prints an unsigned decimal (base 10) number.
 
 //     // テストケース10: 複数のフォーマット指定子
 //     ft_printf("複数のフォーマット指定子::::::%d, %s, %c, %x, %p, %%\n", 42, "answer",
-	'A', 255, &main);
+//	'A', 255, &main);
 //     printf("複数のフォーマット指定子::::::%d, %s, %c, %x, %p, %%\n\n", 42, "answer", 'A',
-	255, &main);
+//	255, &main);
 
 //     // 拡張: 負数を含む複合フォーマット
-//     ft_printf("複数のフォーマット(負数): %d, %s, %c, %x, %p, %%\n", -42, "negative",
-	'Z', -255, &main);
+//     ft_printf("複数のフォーマット(負数): %d, %s, %c, %x, %p, %%\n", -42,
+//		"negative",	'Z', -255, &main);
 //     printf("複数のフォーマット(負数): %d, %s, %c, %x, %p, %%\n\n", -42, "negative", 'Z',
-	-255, &main);
+//	-255, &main);
 
 //     return (0);
 // }
