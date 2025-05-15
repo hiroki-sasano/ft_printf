@@ -6,7 +6,7 @@
 #    By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/09 17:34:47 by hisasano          #+#    #+#              #
-#    Updated: 2025/05/15 20:45:59 by hisasano         ###   ########.fr        #
+#    Updated: 2025/05/15 21:15:31 by hisasano         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,9 @@ SRCS = \
 
 BONUS_SRCS = ft_printf_bonus.c
 
+OBJS = $(SRCS:.c=.o)
+BONUS_OBJS = $(BONUS_SRCS:.c=.o)
+
 HEADERS = ft_printf.h
 CC := cc
 CFLAGS := -Wall -Wextra -Werror
@@ -45,8 +48,6 @@ ifeq ($(MAKECMDGOALS), bonus)
 SRCS += $(BONUS_SRCS)
 CFLAGS += -DBONUS_MODE
 endif
-
-OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
 
