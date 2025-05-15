@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 21:42:23 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/15 17:09:17 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/15 20:26:19 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_frags
 	unsigned int	f_minus;
 	unsigned int	f_zero;
 	unsigned int	f_plus;
-	unsigned int	f_spase;
+	unsigned int	f_space;
 	unsigned int	f_hash;
 	size_t			width;
 	int				precision;

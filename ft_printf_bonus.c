@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:58:27 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/15 19:58:18 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/15 20:38:52 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	ft_left_align(t_frags *frags)
 	s_size = 0;
 	if (frags->precision)
 		ft_apply_prcn(frags);
-	if (frags->f_plus || frags->f_spase)
+	if (frags->f_plus || frags->f_space)
 		ft_add_sign_or_space(frags);
 	if (frags->width > ft_my_strlen(frags->str))
 		s_size = frags->width - ft_my_strlen(frags->str);
@@ -128,7 +128,7 @@ void	ft_add_sign_or_space(t_frags *frags)
 
 	if (frags->f_plus)
 		c = "+";
-	else if (frags->f_spase)
+	else if (frags->f_space)
 		c = " ";
 	else
 		return ;
@@ -189,7 +189,7 @@ void	ft_apply(t_frags *frags)
 		ft_apply_prcn(frags);
 	if (frags->f_plus && (frags->format == F_DEC || frags->format == F_INT))
 		ft_add_sign_or_space(frags);
-	else if (frags->f_spase && (frags->format == F_DEC
+	else if (frags->f_space && (frags->format == F_DEC
 			|| frags->format == F_INT))
 		ft_add_sign_or_space(frags);
 	if (frags->f_hash && (frags->format == F_HEX_LOW
@@ -273,6 +273,7 @@ void	ft_set_str(t_frags *frags, const char *format, size_t start)
 	frags->str_count = i;
 }
 
+// start == %
 void	ft_parse_format(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
@@ -311,7 +312,7 @@ void	ft_set_flag(t_frags *frags, char c)
 	else if (c == '+')
 		frags->f_plus = 1;
 	else if (c == ' ')
-		frags->f_spase = 1;
+		frags->f_space = 1;
 	else if (c == '#')
 		frags->f_hash = 1;
 }
