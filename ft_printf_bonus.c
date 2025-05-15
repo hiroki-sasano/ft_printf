@@ -6,12 +6,12 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:58:27 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/15 14:32:54 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/15 19:58:18 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf_bonus.h"
 #include "ft_printf.h"
+#include "ft_printf_bonus.h"
 #include <limits.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -42,40 +42,17 @@ size_t	ft_parse_width(t_frags *frags, const char *format, size_t start)
 	return (i);
 }
 
-size_t	ft_parse_prec(t_frags *frags, const char *format, size_t start)
-{
-	size_t	i;
-	size_t	j;
-	char	*temp;
-
-	i = 1;
-	while (format[start + i] >= 0 && format[start + i])
-		i++;
-	temp = (char *)malloc(sizeof(char) * i);
-	if (!temp)
-		return (0);
-	i = 1;
-	j = 0;
-	while (format[start + i] >= 0 && format[start + i])
-		temp[j++] = format[start + i];
-	temp[i] = '\0';
-	if (ft_my_atoi(temp) > INT_MAX)
-		frags->width = 0;
-	else
-		frags->width = ft_my_atoi(temp);
-	free(temp);
-	return (i);
-}
-
 void	ft_apply_prcn(t_frags *frags)
 {
 	char	*zero;
 	char	*result;
-	size_t zero_count;
+	size_t	zero_count;
 
-	if (frags->precision <= 0)
+	if (!frags->str || frags->precision <= 0)
 		return ;
 	zero_count = frags->precision - ft_my_strlen(frags->str);
+	if ((int)zero_count <= 0)
+		return ;
 	zero = (char *)malloc(sizeof(char) * (zero_count + 1));
 	if (!zero)
 		return ;
@@ -147,8 +124,8 @@ void	ft_zero_pad(t_frags *frags)
 void	ft_add_sign_or_space(t_frags *frags)
 {
 	char	*temp;
-	char 	*c;
-	
+	char	*c;
+
 	if (frags->f_plus)
 		c = "+";
 	else if (frags->f_spase)
@@ -157,16 +134,14 @@ void	ft_add_sign_or_space(t_frags *frags)
 		return ;
 	temp = ft_strjoin(c, frags->str);
 	if (!temp)
-		return 
-
-	free(frags->str);
+		return (free(frags->str));
 	frags->str = ft_my_strdup(temp);
 	free(temp);
 }
 
-void ft_hash_join(t_frags *frags)
+void	ft_hash_join(t_frags *frags)
 {
-	char *temp;
+	char	*temp;
 
 	if (frags->format == F_HEX_LOW)
 		temp = ft_strjoin("0x", frags->str);
@@ -191,15 +166,12 @@ void	ft_apply_width(t_frags *frags)
 	len = frags->str_count;
 	if (frags->width <= len)
 		return ;
-
 	padding_len = frags->width - len;
 	padding = (char *)malloc(padding_len + 1);
 	if (!padding)
 		return ;
-
 	ft_memset(padding, ' ', padding_len);
 	padding[padding_len] = '\0';
-
 	temp = ft_strjoin(padding, frags->str);
 	free(padding);
 	free(frags->str);
@@ -207,9 +179,10 @@ void	ft_apply_width(t_frags *frags)
 	frags->str_count = frags->width;
 }
 
-
-static void	ft_apply(t_frags *frags)
+void	ft_apply(t_frags *frags)
 {
+	if (frags->format == F_INVALID)
+		return;
 	if (frags->precision && (frags->format == F_DEC || frags->format == F_INT
 			|| frags->format == F_UINT || frags->format == F_HEX_LOW
 			|| frags->format == F_HEX_UP))
@@ -228,6 +201,76 @@ static void	ft_apply(t_frags *frags)
 		ft_apply_width(frags);
 	if (frags->f_minus)
 		ft_left_align(frags);
+}
+
+size_t	ft_parse_prec(t_frags *frags, const char *format, size_t start)
+{
+	size_t	i;
+
+	if (!ft_isdigit(format[start + 1]))
+	{
+		frags->precision = 0;
+		return (1); 
+	}
+
+	frags->precision = ft_my_atoi(&format[start + 1]);
+
+	i = 1;
+	while (ft_isdigit(format[start + i]))
+		i++;
+
+	return (i);
+}
+
+
+// size_t	ft_parse_prec(t_frags *frags, const char *format, size_t start)
+// {
+// 	size_t	i;
+// 	size_t	j;
+// 	char	*temp;
+
+// 	i = 1;
+// 	j = 0;
+// 	if (!ft_isdigit(format[start + 1]))
+// 	{
+// 		frags->precision = 0;
+// 		return (1); 
+// 	}
+// 	while (ft_isdigit(format[start + i]))
+// 		i++;
+// 	temp = malloc(sizeof(char) * (i + 1));
+// 	if (!temp)
+// 		return (0);
+// 	while (j < i - 1)
+// 	{
+// 		temp[j] = format[start + j + 1];
+// 		j++;
+// 	}
+// 	temp[j] = '\0';
+// 	frags->precision = ft_my_atoi(temp);
+// 	free(temp);
+// 	return (i);
+// }
+
+void	ft_set_str(t_frags *frags, const char *format, size_t start)
+{
+	size_t	i;
+	char	*temp;
+
+	temp = (char *)malloc(sizeof(char) * (frags->format_len + 1));
+	if (!temp)
+		return ;
+	i = 0;
+	while (i < frags->format_len && format[start + i])
+	{
+		temp[i] = format[start + i];
+		i++;
+	}
+	temp[i] = '\0';
+	if (frags->str)
+		free(frags->str);
+	frags->str = temp;
+	frags->str_count = i;
 }
 
 void	ft_parse_format(t_frags *frags, const char *format, size_t start)
@@ -250,13 +293,13 @@ void	ft_parse_format(t_frags *frags, const char *format, size_t start)
 			i++;
 			break ;
 		}
-		else
-			break ;
 		i++;
 	}
-	frags->format_len = i;
+	if (frags->format == F_NONE)
+		frags->format = F_INVALID;
+	frags->format_len = i + 1; 
 	if (frags->format == F_INVALID)
-		frags->format_len = 1;
+		ft_set_str(frags, format, start);
 }
 
 void	ft_set_flag(t_frags *frags, char c)
@@ -278,6 +321,8 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg)
 	char	*str;
 
 	str = NULL;
+	if (frags->format == F_INVALID)
+		return; 
 	if (frags->format == F_CHAR)
 		str = ft_conv_char((char)va_arg(*arg, int));
 	else if (frags->format == F_STR)
@@ -298,30 +343,33 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg)
 }
 
 ssize_t	ft_handle_format_bonus(const char *format, size_t i, va_list *arg,
-	t_frags *frags)
+		t_frags *frags)
 {
-ssize_t	ret;
+	ssize_t	ret;
 
-ft_reset_format_spec(frags);
-ft_parse_format(frags, format, i);
-ft_conv_bonus(frags, arg);
-ret = ft_do_write(1, frags->str, frags->str_count);
-free(frags->str);
-frags->str = NULL;
-if (ret == -1)
-	return (-1);
-return (ret);
+	ft_reset_format_spec(frags);
+	ft_parse_format(frags, format, i);
+	ft_conv_bonus(frags, arg);
+
+	if (!frags->str)
+	return (0);
+
+	ret = ft_do_write(1, frags->str, frags->str_count);
+	free(frags->str);
+	frags->str = NULL;
+	if (ret == -1)
+		return (-1);
+	return (ret);
 }
-
 
 #include <stdarg.h>
 #include <unistd.h>
 
 int	ft_printf_bonus(va_list *arg, const char *format, t_frags *frags)
 {
-	size_t i;
-	ssize_t ret_size;
-	ssize_t total_size;
+	size_t	i;
+	ssize_t	ret_size;
+	ssize_t	total_size;
 
 	i = 0;
 	total_size = 0;

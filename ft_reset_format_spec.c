@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 19:56:03 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/14 14:31:46 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/15 19:21:00 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,10 @@ void	ft_reset_format_spec(t_frags *frags)
 	frags->f_hash = 0;
 	frags->width = 0;
 	frags->precision = 0;
+	frags->format = F_NONE; 
 	if (frags->str != NULL)
 		free(frags->str);
 	frags->str = NULL;
 	frags->str_count = 0;
-	return ;
+	frags->format_len = 0;
 }

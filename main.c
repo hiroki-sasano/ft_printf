@@ -306,3 +306,5 @@ unsigned int• %u Prints an unsigned decimal (base 10) number.
 
 //     return (0);
 // }
+
+// ccw main.c libftprintf.a libft/libft.a -o testfile

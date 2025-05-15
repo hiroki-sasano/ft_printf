@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:34:20 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/14 23:08:53 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:33:54 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	ft_conv(t_frags *frags, va_list *arg)
 	char	*str;
 
 	str = NULL;
+	if (frags->format == F_INVALID)
+		return ;
 	if (frags->format == F_CHAR)
 		str = ft_conv_char((char)va_arg(*arg, int));
 	else if (frags->format == F_STR)
@@ -32,14 +34,14 @@ void	ft_conv(t_frags *frags, va_list *arg)
 		str = ft_conv_hex(va_arg(*arg, unsigned int), frags->format);
 	else if (frags->format == F_PCT)
 		str = ft_my_strdup("%");
-	else if (frags->format == F_INVALID)
-		str = NULL;
+
 	frags->str = str;
 	if (str)
 		frags->str_count = ft_my_strlen(str);
 	else
 		frags->str_count = 0;
 }
+
 
 
 // #include "ft_printf.h"

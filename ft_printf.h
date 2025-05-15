@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 21:42:23 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/15 13:48:42 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:09:17 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@
 # include <stdarg.h>
 # include <stddef.h>
 # include <sys/types.h>
+# include <stdint.h>
 
 typedef enum e_argtype
 {
+	F_NONE = -1,
 	F_CHAR,
 	F_STR,
 	F_PTR,
