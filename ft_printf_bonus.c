@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:58:27 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/15 20:38:52 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/16 15:33:44 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,40 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-size_t	ft_parse_width(t_frags *frags, const char *format, size_t start)
+void	ft_set_flag_bonus(t_frags *frags, char c)
+{
+	if (c == '-')
+		frags->f_minus = 1;
+	else if (c == '0')
+		frags->f_zero = 1;
+	else if (c == '+')
+		frags->f_plus = 1;
+	else if (c == ' ')
+		frags->f_space = 1;
+	else if (c == '#')
+		frags->f_hash = 1;
+}
+
+void	ft_add_sign_or_space_bonus(t_frags *frags)
+{
+	char	*temp;
+	char	*c;
+
+	if (frags->f_plus)
+		c = "+";
+	else if (frags->f_space)
+		c = " ";
+	else
+		return ;
+	temp = ft_strjoin(c, frags->str);
+	if (!temp)
+		return (free(frags->str));
+	frags->str = ft_my_strdup(temp);
+	free(temp);
+	frags->str_count = ft_my_strlen(frags->str);
+}
+
+size_t	ft_parse_width_bonus(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
 	size_t	j;
@@ -42,7 +75,7 @@ size_t	ft_parse_width(t_frags *frags, const char *format, size_t start)
 	return (i);
 }
 
-void	ft_apply_prcn(t_frags *frags)
+void	ft_apply_prcn_bonus(t_frags *frags)
 {
 	char	*zero;
 	char	*result;
@@ -68,7 +101,7 @@ void	ft_apply_prcn(t_frags *frags)
 	frags->str_count = ft_my_strlen(frags->str);
 }
 
-void	ft_left_align(t_frags *frags)
+void	ft_left_align_bonus(t_frags *frags)
 {
 	size_t	s_size;
 	char	*temp;
@@ -76,9 +109,9 @@ void	ft_left_align(t_frags *frags)
 
 	s_size = 0;
 	if (frags->precision)
-		ft_apply_prcn(frags);
+		ft_apply_prcn_bonus(frags);
 	if (frags->f_plus || frags->f_space)
-		ft_add_sign_or_space(frags);
+		ft_add_sign_or_space_bonus(frags);
 	if (frags->width > ft_my_strlen(frags->str))
 		s_size = frags->width - ft_my_strlen(frags->str);
 	temp = (char *)malloc(sizeof(char) * (s_size + 1));
@@ -96,7 +129,7 @@ void	ft_left_align(t_frags *frags)
 	frags->str_count = ft_my_strlen(frags->str);
 }
 
-void	ft_zero_pad(t_frags *frags)
+void	ft_zero_pad_bonus(t_frags *frags)
 {
 	size_t	s_size;
 	char	*temp;
@@ -121,25 +154,7 @@ void	ft_zero_pad(t_frags *frags)
 	frags->str_count = ft_my_strlen(frags->str);
 }
 
-void	ft_add_sign_or_space(t_frags *frags)
-{
-	char	*temp;
-	char	*c;
-
-	if (frags->f_plus)
-		c = "+";
-	else if (frags->f_space)
-		c = " ";
-	else
-		return ;
-	temp = ft_strjoin(c, frags->str);
-	if (!temp)
-		return (free(frags->str));
-	frags->str = ft_my_strdup(temp);
-	free(temp);
-}
-
-void	ft_hash_join(t_frags *frags)
+void	ft_hash_join_bonus(t_frags *frags)
 {
 	char	*temp;
 
@@ -156,7 +171,7 @@ void	ft_hash_join(t_frags *frags)
 	frags->str_count = ft_strlen(frags->str);
 }
 
-void	ft_apply_width(t_frags *frags)
+void	ft_apply_width_bonus(t_frags *frags)
 {
 	size_t	len;
 	size_t	padding_len;
@@ -176,83 +191,54 @@ void	ft_apply_width(t_frags *frags)
 	free(padding);
 	free(frags->str);
 	frags->str = temp;
-	frags->str_count = frags->width;
+	frags->str_count = ft_my_strlen(frags->str);
+	// frags->str_count = frags->width;
 }
 
-void	ft_apply(t_frags *frags)
+void	ft_apply_bonus(t_frags *frags)
 {
 	if (frags->format == F_INVALID)
-		return;
+		return ;
 	if (frags->precision && (frags->format == F_DEC || frags->format == F_INT
 			|| frags->format == F_UINT || frags->format == F_HEX_LOW
 			|| frags->format == F_HEX_UP))
-		ft_apply_prcn(frags);
+		ft_apply_prcn_bonus(frags);
 	if (frags->f_plus && (frags->format == F_DEC || frags->format == F_INT))
-		ft_add_sign_or_space(frags);
+		ft_add_sign_or_space_bonus(frags);
 	else if (frags->f_space && (frags->format == F_DEC
 			|| frags->format == F_INT))
-		ft_add_sign_or_space(frags);
+		ft_add_sign_or_space_bonus(frags);
 	if (frags->f_hash && (frags->format == F_HEX_LOW
 			|| frags->format == F_HEX_UP))
-		ft_hash_join(frags);
+		ft_hash_join_bonus(frags);
 	if (frags->f_zero && !frags->f_minus && !frags->precision)
-		ft_zero_pad(frags);
+		ft_zero_pad_bonus(frags);
 	if (frags->width && !frags->f_minus && !frags->f_zero)
-		ft_apply_width(frags);
+		ft_apply_width_bonus(frags);
 	if (frags->f_minus)
-		ft_left_align(frags);
+		ft_left_align_bonus(frags);
+	if (frags->str)
+		frags->str_count = ft_my_strlen(frags->str);
 }
 
-size_t	ft_parse_prec(t_frags *frags, const char *format, size_t start)
+size_t	ft_parse_prec_bonus(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
 
 	if (!ft_isdigit(format[start + 1]))
 	{
 		frags->precision = 0;
-		return (1); 
+		return (1);
 	}
-
 	frags->precision = ft_my_atoi(&format[start + 1]);
-
 	i = 1;
 	while (ft_isdigit(format[start + i]))
 		i++;
-
 	return (i);
 }
 
-
-// size_t	ft_parse_prec(t_frags *frags, const char *format, size_t start)
-// {
-// 	size_t	i;
-// 	size_t	j;
-// 	char	*temp;
-
-// 	i = 1;
-// 	j = 0;
-// 	if (!ft_isdigit(format[start + 1]))
-// 	{
-// 		frags->precision = 0;
-// 		return (1); 
-// 	}
-// 	while (ft_isdigit(format[start + i]))
-// 		i++;
-// 	temp = malloc(sizeof(char) * (i + 1));
-// 	if (!temp)
-// 		return (0);
-// 	while (j < i - 1)
-// 	{
-// 		temp[j] = format[start + j + 1];
-// 		j++;
-// 	}
-// 	temp[j] = '\0';
-// 	frags->precision = ft_my_atoi(temp);
-// 	free(temp);
-// 	return (i);
-// }
-
-void	ft_set_str(t_frags *frags, const char *format, size_t start)
+#include <stdio.h>
+void	ft_set_str_bonus(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
 	char	*temp;
@@ -260,8 +246,11 @@ void	ft_set_str(t_frags *frags, const char *format, size_t start)
 	temp = (char *)malloc(sizeof(char) * (frags->format_len + 1));
 	if (!temp)
 		return ;
+	/********* */
+	// fprintf(stderr, "format_len = %zu\n", frags->format_len);
+	/********** */
 	i = 0;
-	while (i < frags->format_len && format[start + i])
+	while (i < frags->format_len && format[start + i] != '\0')
 	{
 		temp[i] = format[start + i];
 		i++;
@@ -270,51 +259,48 @@ void	ft_set_str(t_frags *frags, const char *format, size_t start)
 	if (frags->str)
 		free(frags->str);
 	frags->str = temp;
-	frags->str_count = i;
+	frags->str_count = ft_my_strlen(frags->str);
 }
 
-// start == %
-void	ft_parse_format(t_frags *frags, const char *format, size_t start)
+#include "ft_printf.h"
+#include "ft_printf_bonus.h"
+//"->[%%\0]\n"
+void	ft_parse_format_bonus(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
 	char	c;
 
 	i = 1;
-	while (format[start + i] && !ft_is_spec(format[start + i]))
+	while (format[start + i])
 	{
 		c = format[start + i];
-		ft_set_flag(frags, c);
+		ft_set_flag_bonus(frags, c);
 		if (frags->precision == 0 && ft_isdigit(c))
-			i += ft_parse_width(frags, format, start + i) - 1;
+			i += ft_parse_width_bonus(frags, format, start + i) - 1;
 		else if (c == '.')
-			i += ft_parse_prec(frags, format, start + i) - 1;
+			i += ft_parse_prec_bonus(frags, format, start + i) - 1;
 		else if (ft_is_spec(c))
 		{
 			ft_spec_type(frags, c);
+			if (frags->format == F_PCT)
+				ft_set_str_bonus(frags, format, start);
 			i++;
 			break ;
 		}
 		i++;
 	}
 	if (frags->format == F_NONE)
+	{
 		frags->format = F_INVALID;
-	frags->format_len = i + 1; 
-	if (frags->format == F_INVALID)
-		ft_set_str(frags, format, start);
-}
-
-void	ft_set_flag(t_frags *frags, char c)
-{
-	if (c == '-')
-		frags->f_minus = 1;
-	else if (c == '0')
-		frags->f_zero = 1;
-	else if (c == '+')
-		frags->f_plus = 1;
-	else if (c == ' ')
-		frags->f_space = 1;
-	else if (c == '#')
-		frags->f_hash = 1;
+		frags->format_len = i;
+		ft_set_str_bonus(frags, format, start);
+		return ;
+	}
+	// if (format[start + i] == '\0')
+	// 	frags->format_len = i;
+	// else
+	// 	frags->format_len = i + 1;
+	frags->format_len = i;
 }
 
 void	ft_conv_bonus(t_frags *frags, va_list *arg)
@@ -323,7 +309,7 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg)
 
 	str = NULL;
 	if (frags->format == F_INVALID)
-		return; 
+		return ;
 	if (frags->format == F_CHAR)
 		str = ft_conv_char((char)va_arg(*arg, int));
 	else if (frags->format == F_STR)
@@ -339,8 +325,11 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg)
 	else if (frags->format == F_PCT)
 		str = ft_my_strdup("%");
 	if (str)
+	{
 		frags->str = str;
-	ft_apply(frags);
+		frags->str_count = ft_my_strlen(str);
+	}
+	ft_apply_bonus(frags);
 }
 
 ssize_t	ft_handle_format_bonus(const char *format, size_t i, va_list *arg,
@@ -349,12 +338,10 @@ ssize_t	ft_handle_format_bonus(const char *format, size_t i, va_list *arg,
 	ssize_t	ret;
 
 	ft_reset_format_spec(frags);
-	ft_parse_format(frags, format, i);
+	ft_parse_format_bonus(frags, format, i);
 	ft_conv_bonus(frags, arg);
-
 	if (!frags->str)
-	return (0);
-
+		return (0);
 	ret = ft_do_write(1, frags->str, frags->str_count);
 	free(frags->str);
 	frags->str = NULL;
@@ -383,6 +370,8 @@ int	ft_printf_bonus(va_list *arg, const char *format, t_frags *frags)
 				return (-1);
 			total_size += ret_size;
 			i += frags->format_len;
+			if (format[i] == '\0')
+				return (total_size);
 		}
 		else
 		{

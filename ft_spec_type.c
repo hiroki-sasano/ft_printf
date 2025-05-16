@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:31:54 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/14 14:32:20 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:04:10 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,11 @@ void	ft_spec_type(t_frags *frags, char type)
 	else if (type == 'X')
 		frags->format = F_HEX_UP;
 	else if (type == '%')
+	{
 		frags->format = F_PCT;
+		frags->format_len = 1;
+	}
+
 	else
 		frags->format = F_INVALID;
 }
