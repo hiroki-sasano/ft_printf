@@ -1,43 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_bonus.c                                  :+:      :+:    :+:   */
+/*   ft_parse_width_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/13 17:58:27 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:49:30 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 18:09:23 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 18:12:59 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "ft_printf_bonus.h"
-#include <unistd.h>
+#include <stdlib.h>
 
-int	ft_printf_bonus(va_list *arg, const char *format, t_frags *frags)
+size_t	ft_parse_width(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
-	ssize_t	ret_size;
-	ssize_t	total_size;
+	size_t	j;
+	char	*temp;
 
 	i = 0;
-	total_size = 0;
-	while (format[i])
+	while (ft_isdigit(format[start + i]))
+		i++;
+	if (i == 0)
+		return (0);
+	temp = (char *)malloc(sizeof(char) * (i + 1));
+	if (!temp)
+		return (0);
+	j = 0;
+	while (j < i)
 	{
-		if (format[i] == '%')
-		{
-			ret_size = ft_handle_format(format, i, arg, frags);
-			if (ret_size == -1)
-				return (-1);
-			total_size += ret_size;
-			i += frags->format_len;
-		}
-		else
-		{
-			if (write(1, &format[i++], 1) == -1)
-				return (-1);
-			total_size++;
-		}
+		temp[j] = format[start + j];
+		j++;
 	}
-	return (total_size);
+	temp[j] = '\0';
+	frags->width = ft_my_atoi(temp);
+	free(temp);
+	return (i);
 }

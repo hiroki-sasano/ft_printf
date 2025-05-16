@@ -1,43 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_bonus.c                                  :+:      :+:    :+:   */
+/*   ft_parse_prec_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/13 17:58:27 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:49:30 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 17:48:38 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 17:48:58 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "ft_printf_bonus.h"
-#include <unistd.h>
 
-int	ft_printf_bonus(va_list *arg, const char *format, t_frags *frags)
+size_t	ft_parse_prec(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
-	ssize_t	ret_size;
-	ssize_t	total_size;
 
-	i = 0;
-	total_size = 0;
-	while (format[i])
+	if (!ft_isdigit(format[start + 1]))
 	{
-		if (format[i] == '%')
-		{
-			ret_size = ft_handle_format(format, i, arg, frags);
-			if (ret_size == -1)
-				return (-1);
-			total_size += ret_size;
-			i += frags->format_len;
-		}
-		else
-		{
-			if (write(1, &format[i++], 1) == -1)
-				return (-1);
-			total_size++;
-		}
+		frags->precision = 0;
+		return (1);
 	}
-	return (total_size);
+	frags->precision = ft_my_atoi(&format[start + 1]);
+	i = 1;
+	while (ft_isdigit(format[start + i]))
+		i++;
+	return (i);
 }

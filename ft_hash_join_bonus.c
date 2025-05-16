@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_set_str_bonus.c                                 :+:      :+:    :+:   */
+/*   ft_hash_join_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 23:35:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:48:57 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 17:53:22 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 18:24:58 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,19 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-void	ft_set_str(t_frags *frags, const char *format, size_t start)
+void	ft_hash_join(t_frags *frags)
 {
-	size_t	i;
 	char	*temp;
 
-	temp = (char *)malloc(sizeof(char) * (frags->format_len + 1));
+	if (frags->format == F_HEX_LOW)
+		temp = ft_strjoin("0x", frags->str);
+	else if (frags->format == F_HEX_UP)
+		temp = ft_strjoin("0X", frags->str);
+	else
+		return ;
 	if (!temp)
 		return ;
-	i = 0;
-	while (i < frags->format_len && format[start + i] != '\0')
-	{
-		temp[i] = format[start + i];
-		i++;
-	}
-	temp[i] = '\0';
-	if (frags->str)
-		free(frags->str);
+	free(frags->str);
 	frags->str = temp;
 	frags->str_count = ft_my_strlen(frags->str);
 }

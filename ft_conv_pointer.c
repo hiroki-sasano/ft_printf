@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:19:44 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/14 15:39:10 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/16 21:19:51 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_conv_pointer(void *ptr)
 	char		*result;
 
 	if (!ptr)
-		return (ft_my_strdup("0x0"));
+		return (ft_my_strdup("nil"));
 	addr = (uintptr_t)ptr;
 	hex = ft_utoa_base(addr, "0123456789abcdef");
 	if (!hex)

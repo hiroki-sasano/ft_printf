@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_set_str_bonus.c                                 :+:      :+:    :+:   */
+/*   ft_handle_format_bonus.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 23:35:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:48:57 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 16:40:07 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 20:47:51 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,20 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-void	ft_set_str(t_frags *frags, const char *format, size_t start)
+ssize_t	ft_handle_format(const char *format, size_t i, va_list *arg,
+		t_frags *frags)
 {
-	size_t	i;
-	char	*temp;
+	ssize_t	ret;
 
-	temp = (char *)malloc(sizeof(char) * (frags->format_len + 1));
-	if (!temp)
-		return ;
-	i = 0;
-	while (i < frags->format_len && format[start + i] != '\0')
-	{
-		temp[i] = format[start + i];
-		i++;
-	}
-	temp[i] = '\0';
-	if (frags->str)
-		free(frags->str);
-	frags->str = temp;
-	frags->str_count = ft_my_strlen(frags->str);
+	ft_reset_format_spec(frags);
+	ft_parse_format(frags, format, i);
+	ft_conv_bonus(frags, arg);
+	if (!frags->str)
+		return (0);
+	ret = ft_do_write(1, frags->str, frags->str_count);
+	free(frags->str);
+	frags->str = NULL;
+	if (ret == -1)
+		return (-1);
+	return (ret);
 }

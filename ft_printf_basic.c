@@ -6,14 +6,12 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:40:46 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 14:18:37 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/16 18:25:51 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <unistd.h>
-
-
 
 static int	ft_handle_percent(t_frags *frags, va_list *arg, const char *format,
 		size_t *i)

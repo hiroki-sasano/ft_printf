@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_conv.c                                          :+:      :+:    :+:   */
+/*   ft_conv_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/13 20:34:20 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:50:37 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 16:44:56 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 21:10:59 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <unistd.h>
+#include "ft_printf_bonus.h"
 
-void	ft_conv(t_frags *frags, va_list *arg)
+void	ft_conv_bonus(t_frags *frags, va_list *arg)
 {
 	char	*str;
 
@@ -34,9 +34,10 @@ void	ft_conv(t_frags *frags, va_list *arg)
 		str = ft_conv_hex(va_arg(*arg, unsigned int), frags->format);
 	else if (frags->format == F_PCT)
 		str = ft_my_strdup("%");
-	frags->str = str;
 	if (str)
+	{
+		frags->str = str;
 		frags->str_count = ft_my_strlen(str);
-	else
-		frags->str_count = 0;
+	}
+	ft_apply(frags);
 }

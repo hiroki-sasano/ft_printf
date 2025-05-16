@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_set_str_bonus.c                                 :+:      :+:    :+:   */
+/*   ft_apply_width_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 23:35:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:48:57 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 17:52:10 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 18:13:46 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,25 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-void	ft_set_str(t_frags *frags, const char *format, size_t start)
+void	ft_apply_width(t_frags *frags)
 {
-	size_t	i;
+	size_t	len;
+	size_t	padding_len;
+	char	*padding;
 	char	*temp;
 
-	temp = (char *)malloc(sizeof(char) * (frags->format_len + 1));
-	if (!temp)
+	len = frags->str_count;
+	if (frags->width <= len)
 		return ;
-	i = 0;
-	while (i < frags->format_len && format[start + i] != '\0')
-	{
-		temp[i] = format[start + i];
-		i++;
-	}
-	temp[i] = '\0';
-	if (frags->str)
-		free(frags->str);
+	padding_len = frags->width - len;
+	padding = (char *)malloc(padding_len + 1);
+	if (!padding)
+		return ;
+	ft_memset(padding, ' ', padding_len);
+	padding[padding_len] = '\0';
+	temp = ft_strjoin(padding, frags->str);
+	free(padding);
+	free(frags->str);
 	frags->str = temp;
 	frags->str_count = ft_my_strlen(frags->str);
 }

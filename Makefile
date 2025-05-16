@@ -6,7 +6,7 @@
 #    By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/09 17:34:47 by hisasano          #+#    #+#              #
-#    Updated: 2025/05/15 21:15:31 by hisasano         ###   ########.fr        #
+#    Updated: 2025/05/16 20:36:51 by hisasano         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,22 @@ SRCS = \
 	ft_my_strdup.c \
 	ft_my_strlen.c
 
-BONUS_SRCS = ft_printf_bonus.c
+BONUS_SRCS = ft_printf_bonus.c \
+ft_add_sign_or_space_bonus.c \
+ft_parse_width_bonus.c \
+ft_apply_prcn_bonus.c \
+ft_left_align_bonus.c \
+ft_zero_pad_bonus.c \
+ft_hash_join_bonus.c \
+ft_apply_width_bonus.c \
+ft_apply_bonus.c \
+ft_parse_prec_bonus.c \
+ft_set_str_bonus.c \
+ft_parse_format_bonus.c \
+ft_set_flagc_bonus.c \
+ft_conv_bonus.c \
+ft_handle_format_bonus.c \
+ft_printf_bonus.c 
 
 OBJS = $(SRCS:.c=.o)
 BONUS_OBJS = $(BONUS_SRCS:.c=.o)
@@ -52,7 +67,7 @@ endif
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	make -C $(LIBFT_DIR) all    
+	$(MAKE) -C $(LIBFT_DIR) all    
 	ar rcs $(NAME) $(OBJS)
 
 bonus: $(NAME)
@@ -67,4 +82,14 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus
+test:
+	$(MAKE) re
+	$(CC) $(CFLAGS) main_basic.c $(NAME) $(LIBFT_A) -o test_mandatory
+
+testbonus:
+	$(MAKE) fclean
+	$(MAKE) bonus
+	$(CC) $(CFLAGS) -DBONUS_MODE main_bonus.c $(NAME) $(LIBFT_A) -o test_bonus
+
+
+.PHONY: all clean fclean re bonus test test_bonus

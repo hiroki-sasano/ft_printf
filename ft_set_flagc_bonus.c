@@ -1,36 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_set_str_bonus.c                                 :+:      :+:    :+:   */
+/*   ft_set_flagc_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 23:35:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:48:57 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 16:46:54 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 17:39:58 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "ft_printf_bonus.h"
-#include <stdlib.h>
 
-void	ft_set_str(t_frags *frags, const char *format, size_t start)
+void	ft_set_flag(t_frags *frags, char c)
 {
-	size_t	i;
-	char	*temp;
-
-	temp = (char *)malloc(sizeof(char) * (frags->format_len + 1));
-	if (!temp)
-		return ;
-	i = 0;
-	while (i < frags->format_len && format[start + i] != '\0')
-	{
-		temp[i] = format[start + i];
-		i++;
-	}
-	temp[i] = '\0';
-	if (frags->str)
-		free(frags->str);
-	frags->str = temp;
-	frags->str_count = ft_my_strlen(frags->str);
+	if (c == '-')
+		frags->f_minus = 1;
+	else if (c == '0')
+		frags->f_zero = 1;
+	else if (c == '+')
+		frags->f_plus = 1;
+	else if (c == ' ')
+		frags->f_space = 1;
+	else if (c == '#')
+		frags->f_hash = 1;
 }

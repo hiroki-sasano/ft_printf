@@ -1,28 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_set_flag_bonus.c                                :+:      :+:    :+:   */
+/*   ft_add_sign_or_space_bonus.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/15 23:34:52 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/15 23:34:59 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/16 18:10:03 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/16 18:12:29 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf_bonus.h"
 #include "ft_printf.h"
+#include "ft_printf_bonus.h"
+#include <stdlib.h>
 
-void	ft_set_flag_bonus(t_frags *frags, char c)
+void	ft_add_sign_or_space(t_frags *frags)
 {
-	if (c == '-')
-		frags->f_minus = 1;
-	else if (c == '0')
-		frags->f_zero = 1;
-	else if (c == '+')
-		frags->f_plus = 1;
-	else if (c == ' ')
-		frags->f_space = 1;
-	else if (c == '#')
-		frags->f_hash = 1;
+	char	*temp;
+	char	*c;
+
+	if (frags->f_plus)
+		c = "+";
+	else if (frags->f_space)
+		c = " ";
+	else
+		return ;
+	temp = ft_strjoin(c, frags->str);
+	if (!temp)
+		return (free(frags->str));
+	frags->str = ft_my_strdup(temp);
+	free(temp);
+	frags->str_count = ft_my_strlen(frags->str);
 }
