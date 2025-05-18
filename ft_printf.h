@@ -6,14 +6,14 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 21:42:23 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/18 01:56:38 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/18 14:37:19 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-# include "../libft/libft.h"
+# include "libft/libft.h"
 # include <stdarg.h>
 # include <stddef.h>
 # include <stdint.h>
