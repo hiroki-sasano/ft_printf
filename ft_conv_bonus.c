@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:44:56 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 21:10:59 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/18 00:58:27 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg)
 		str = ft_conv_pointer(va_arg(*arg, void *));
 	else if (frags->format == F_HEX_LOW || frags->format == F_HEX_UP)
 		str = ft_conv_hex(va_arg(*arg, unsigned int), frags->format);
-	else if (frags->format == F_PCT)
-		str = ft_my_strdup("%");
 	if (str)
 	{
 		frags->str = str;

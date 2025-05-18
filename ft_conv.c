@@ -6,12 +6,22 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:34:20 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:50:37 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/18 02:02:21 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <unistd.h>
+
+static void	ft_put_strcount(t_frags *frags, char *str)
+{
+	if (frags->format == F_CHAR)
+		frags->str_count = 1;
+	else if (str)
+		frags->str_count = ft_my_strlen(str);
+	else
+		frags->str_count = 0;
+}
 
 void	ft_conv(t_frags *frags, va_list *arg)
 {
@@ -20,7 +30,7 @@ void	ft_conv(t_frags *frags, va_list *arg)
 	str = NULL;
 	if (frags->format == F_INVALID)
 		return ;
-	if (frags->format == F_CHAR)
+	else if (frags->format == F_CHAR)
 		str = ft_conv_char((char)va_arg(*arg, int));
 	else if (frags->format == F_STR)
 		str = ft_conv_str(va_arg(*arg, char *));
@@ -35,8 +45,5 @@ void	ft_conv(t_frags *frags, va_list *arg)
 	else if (frags->format == F_PCT)
 		str = ft_my_strdup("%");
 	frags->str = str;
-	if (str)
-		frags->str_count = ft_my_strlen(str);
-	else
-		frags->str_count = 0;
+	ft_put_strcount(frags, str);
 }

@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:04:44 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:46:42 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/18 00:48:20 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,8 @@ void	ft_left_align(t_frags *frags)
 	char	*result;
 
 	s_size = 0;
-	if (frags->precision)
-		ft_apply_prcn(frags);
-	if (frags->f_plus || frags->f_space)
-		ft_add_sign_or_space(frags);
-	if (frags->width > ft_my_strlen(frags->str))
-		s_size = frags->width - ft_my_strlen(frags->str);
+	if (frags->width > frags->str_count)
+		s_size = frags->width - frags->str_count;
 	temp = (char *)malloc(sizeof(char) * (s_size + 1));
 	if (!temp)
 		return ;

@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 21:42:23 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/15 20:26:19 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/18 01:56:38 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # include "../libft/libft.h"
 # include <stdarg.h>
 # include <stddef.h>
-# include <sys/types.h>
 # include <stdint.h>
+# include <sys/types.h>
 
 typedef enum e_argtype
 {
@@ -42,6 +42,7 @@ typedef struct s_frags
 	unsigned int	f_space;
 	unsigned int	f_hash;
 	size_t			width;
+	unsigned int	prec_on;
 	int				precision;
 	t_argtype		format;
 	char			*str;

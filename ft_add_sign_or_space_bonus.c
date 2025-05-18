@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:10:03 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 18:12:29 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/18 02:02:50 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	ft_add_sign_or_space(t_frags *frags)
 	temp = ft_strjoin(c, frags->str);
 	if (!temp)
 		return (free(frags->str));
-	frags->str = ft_my_strdup(temp);
-	free(temp);
-	frags->str_count = ft_my_strlen(frags->str);
+	free(frags->str);
+	frags->str = temp;
+	frags->str_count++;
 }

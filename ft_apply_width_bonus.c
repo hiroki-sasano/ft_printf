@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:52:10 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 18:13:46 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/18 01:26:55 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,26 @@
 
 void	ft_apply_width(t_frags *frags)
 {
-	size_t	len;
-	size_t	padding_len;
-	char	*padding;
-	char	*temp;
+	size_t	pad;
+	char	*pad_str;
+	char	*tmp;
 
-	len = frags->str_count;
-	if (frags->width <= len)
+	if (!frags->str)
 		return ;
-	padding_len = frags->width - len;
-	padding = (char *)malloc(padding_len + 1);
-	if (!padding)
+	if (frags->width > frags->str_count)
+		pad = frags->width - frags->str_count;
+	else
+		pad = 0;
+	if (pad == 0)
 		return ;
-	ft_memset(padding, ' ', padding_len);
-	padding[padding_len] = '\0';
-	temp = ft_strjoin(padding, frags->str);
-	free(padding);
+	pad_str = malloc(pad + 1);
+	if (!pad_str)
+		return ;
+	ft_memset(pad_str, ' ', pad);
+	pad_str[pad] = '\0';
+	tmp = ft_strjoin(pad_str, frags->str);
+	free(pad_str);
 	free(frags->str);
-	frags->str = temp;
-	frags->str_count = ft_my_strlen(frags->str);
+	frags->str = tmp;
+	frags->str_count = ft_my_strlen(tmp);
 }

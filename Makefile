@@ -6,7 +6,7 @@
 #    By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/09 17:34:47 by hisasano          #+#    #+#              #
-#    Updated: 2025/05/16 20:36:51 by hisasano         ###   ########.fr        #
+#    Updated: 2025/05/17 03:37:58 by hisasano         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,12 +84,20 @@ re: fclean all
 
 test:
 	$(MAKE) re
-	$(CC) $(CFLAGS) main_basic.c $(NAME) $(LIBFT_A) -o test_mandatory
+	$(CC)               \
+		main_basic.c      \
+		$(NAME)           \
+		$(LIBFT_A)        \
+		-o test_mandatory
 
 testbonus:
 	$(MAKE) fclean
 	$(MAKE) bonus
-	$(CC) $(CFLAGS) -DBONUS_MODE main_bonus.c $(NAME) $(LIBFT_A) -o test_bonus
-
+	$(CC)               \
+		-DBONUS_MODE      \
+		main_bonus.c      \
+		$(NAME)           \
+		$(LIBFT_A)        \
+		-o test_bonus
 
 .PHONY: all clean fclean re bonus test test_bonus
