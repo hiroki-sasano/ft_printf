@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:50:21 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/17 23:09:29 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/19 21:30:00 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,11 @@ void	ft_apply(t_frags *frags)
 	if (frags->f_minus)
 		ft_left_align(frags);
 	if (frags->str)
-		frags->str_count = ft_my_strlen(frags->str);
+	{
+		if (frags->format == F_CHAR && frags->str[0] == '\0')
+			frags->str_count = 1; /* NUL も 1 文字 */
+		else
+			frags->str_count = ft_my_strlen(frags->str);
+	}
 }
+
