@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:10:03 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/18 02:02:50 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 07:55:26 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,16 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-void	ft_add_sign_or_space(t_frags *frags)
+void	ft_add_sign_or_space(t_frags *f)
 {
-	char	*temp;
-	char	*c;
-
-	if (frags->f_plus)
-		c = "+";
-	else if (frags->f_space)
-		c = " ";
-	else
+	if (!(f->format == F_DEC || f->format == F_INT))
 		return ;
-	temp = ft_strjoin(c, frags->str);
-	if (!temp)
-		return (free(frags->str));
-	free(frags->str);
-	frags->str = temp;
-	frags->str_count++;
+	if (f->str[0] == '-')
+		return ;
+	if (f->prefix != NULL)
+		return ;
+	if (f->f_plus)
+		f->prefix = ft_my_strdup("+");
+	else if (f->f_space)
+		f->prefix = ft_my_strdup(" ");
 }

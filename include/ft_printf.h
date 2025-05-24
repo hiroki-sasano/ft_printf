@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 21:42:23 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/19 19:03:01 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 06:20:50 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_frags
 	unsigned int	prec_on;
 	int				precision;
 	t_argtype		format;
+	char			*prefix;
 	char			*str;
 	size_t			str_count;
 	size_t			format_len;
@@ -70,5 +71,7 @@ int					ft_printf_basic(va_list *arg, const char *format,
 int					ft_printf(const char *format, ...);
 char				*ft_my_strdup(const char *s1);
 size_t				ft_my_strlen(const char *s);
+char				*ft_my_itoa(int n);
+char				*ft_my_strjoin(char const *s1, char const *s2);
 
 #endif

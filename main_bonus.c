@@ -112,17 +112,20 @@ printf("STD lone %%         |");      s_ret = printf("[%%]\n");
 printf("FT  lone %%         |");      f_ret = ft_printf("[%%]\n");
 printf("R: %d %d\n\n", s_ret, f_ret);
 
-/* invalid %%Q (std undefined → literal出力で模倣) */
+/* invalid %%Q (std undefined → literal出力で模倣)　未定義 */
+printf("/**undefined behavior**/\n");
 printf("STD invalid %%Q     |");      s_ret = printf("[%%Q]\n");
 printf("FT  invalid %%Q     |");      f_ret = ft_printf("[%%Q]\n");
 printf("R: %d %d\n\n", s_ret, f_ret);
 
-/* width only %% */
+/* width only %% 　未定義　　*/
+printf("/**undefined behavior**/\n");
 printf("STD width only %%   |");      s_ret = printf("[%5%%]\n");
 printf("FT  width only %%   |");      f_ret = ft_printf("[%5%%]\n");
 printf("R: %d %d\n\n", s_ret, f_ret);
 
-/* width.prec trailing . */
+/* width.prec trailing . 未定義*/
+printf("/**undefined behavior**/\n"); 
 printf("STD width.prec .    |");      s_ret = printf("[%5.]\n");
 printf("FT  width.prec .    |");      f_ret = ft_printf("[%5.]\n");
 printf("R: %d %d\n\n", s_ret, f_ret);
@@ -157,3 +160,26 @@ printf("R: %d %d\n", s_ret, f_ret);
 
     return 0;
 }
+
+// /* null char */
+// printf("STD nul char END  |");        s_ret = printf("[%cEND]\n", '\0');
+// printf("FT  nul char END  |");        f_ret = ft_printf("[%cEND]\n", '\0');
+// printf("R: %d %d\n\n", s_ret, f_ret);
+
+
+/*  % [flags] [width] [.precision] [specifier]  */
+/*    -0#" "+  INT_MAX　.INT_MAX                */
+
+/* . - > 0 */
+/* (. > 0) 	"width & . = (%8.5d "    0x00042")" (%-8.5d "00042    ")
+(+ > ' ') (0 < .) (- > 0) (# %x %o 0x, 0X, 0 が先頭に付加)
+ (' ' % d " 42")  (%+d %+i "+42" ) */
+
+ /********** 引数が　０の場合　要検討 */
+/*
+%.Nd → 最小桁数が N になるように ゼロ埋め
+
+精度指定があると、0 フラグは無視される
+
+0 のみを出力する場合、%.0d は空文字になる（特別ルール）
+*/

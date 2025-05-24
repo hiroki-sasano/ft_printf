@@ -6,22 +6,21 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:44:56 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/19 21:24:53 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 07:24:36 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "ft_printf_bonus.h"
 
-static void set_strlen(t_frags *frags, char *str)
+static void	set_strlen(t_frags *frags, char *str)
 {
 	if (frags->format == F_CHAR && str[0] == '\0')
 		frags->str_count = 1;
-else
-	frags->str_count = ft_my_strlen(str);
+	else
+		frags->str_count = ft_my_strlen(str);
 }
 
-#include <unistd.h>
 void	ft_conv_bonus(t_frags *frags, va_list *arg)
 {
 	char	*str;
@@ -43,8 +42,9 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg)
 		str = ft_conv_hex(va_arg(*arg, unsigned int), frags->format);
 	if (str)
 	{
-		frags->str = str; 
+		frags->str = str;
 		set_strlen(frags, str);
 	}
+	ft_set_prefix(frags);
 	ft_apply(frags);
 }

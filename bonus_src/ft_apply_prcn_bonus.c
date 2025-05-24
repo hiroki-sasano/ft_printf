@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:08:25 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/18 12:36:59 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 06:58:36 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,37 +32,62 @@ static int	handle_zero_prec_zero_val(t_frags *frags)
 
 static int	handle_string_precision(t_frags *frags)
 {
+	char	*tmp;
+
 	if (frags->format == F_STR && frags->precision >= 0
 		&& (size_t)frags->precision < frags->str_count)
 	{
-		frags->str[frags->precision] = '\0';
+		tmp = ft_substr(frags->str, 0, frags->precision);
+		if (!tmp)
+			return (1);
+		free(frags->str);
+		frags->str = tmp;
 		frags->str_count = frags->precision;
 		return (1);
 	}
 	return (0);
 }
 
-static void	apply_numeric_zero_pad(t_frags *frags)
+/*
+ * precision が「**数字部分**を何桁にするか」を示す点に合わせて，
+ * ① 先頭の符号／0x を **prefix** として切り分ける
+ * ② digits_len = そのほかの数字だけの長さ
+ * ③ zero_len  = precision - digits_len で決定
+ * ④ prefix → 0パディング → 数字 という順で連結
+ * 最後に frags->str_count を更新します。
+ */
+static void	apply_numeric_zero_pad(t_frags *f)
 {
 	size_t	zero_len;
 	char	*zeros;
+	char	*tmp;
 	char	*joined;
 
-	if (frags->precision <= 0 || (size_t)frags->precision <= frags->str_count)
+	if (f->format == F_STR || f->format == F_CHAR || f->precision <= 0
+		|| (size_t)f->precision <= f->str_count)
 		return ;
-	zero_len = frags->precision - frags->str_count;
-	zeros = malloc(zero_len + 1);
-	if (!zeros)
+	zero_len = f->precision - f->str_count;
+	zeros = ft_calloc(zero_len + 1, 1);
+	if (zeros == NULL)
 		return ;
 	ft_memset(zeros, '0', zero_len);
-	zeros[zero_len] = '\0';
-	joined = ft_strjoin(zeros, frags->str);
-	free(zeros);
-	if (!joined)
+	if (f->prefix != NULL)
+		tmp = ft_my_strjoin(f->prefix, zeros);
+	else
+		tmp = ft_my_strdup(zeros);
+	if (tmp == NULL)
+	{
+		free(zeros);
 		return ;
-	free(frags->str);
-	frags->str = joined;
-	frags->str_count = frags->precision;
+	}
+	joined = ft_my_strjoin(tmp, f->str);
+	free(zeros);
+	free(tmp);
+	free(f->str);
+	if (joined == NULL)
+		return ;
+	f->str = joined;
+	f->str_count = f->precision;
 }
 
 void	ft_apply_prcn(t_frags *frags)
@@ -77,5 +102,5 @@ void	ft_apply_prcn(t_frags *frags)
 }
 
 // if (frags->precision <= 0 || (size_t)frags->precision <= frags->str_count)
-// zero_pat on off 
+// zero_pat on off
 //"(size_t)frags->precision <= frags->str_count" is alredy　full str

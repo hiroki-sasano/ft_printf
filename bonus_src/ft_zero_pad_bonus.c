@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:04:11 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/18 13:06:33 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 08:23:29 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,71 +14,56 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-static size_t	get_prefix_len(t_frags *f)
+static size_t	get_pad_len(t_frags *f, size_t px_len)
 {
-	if (f->f_hash && (f->format == F_HEX_LOW || f->format == F_HEX_UP)
-		&& !(f->str_count == 1 && f->str[0] == '0'))
-		return (2);
+	if (f->width > f->str_count + px_len)
+		return (f->width - (f->str_count + px_len));
 	return (0);
 }
 
-static char	*make_zeros(size_t pad_len)
+static char	*create_zeros(size_t len)
 {
 	char	*z;
 
-	z = malloc(pad_len + 1);
-	if (!z)
+	z = malloc(len + 1);
+	if (z == NULL)
 		return (NULL);
-	ft_memset(z, '0', pad_len);
-	z[pad_len] = '\0';
+	ft_memset(z, '0', len);
+	z[len] = '\0';
 	return (z);
 }
 
-static char	*join_pad(const char *old, const char *zeros, t_frags *f,
-		size_t prefix_len)
+static int	join_zeros(t_frags *f, char *zeros)
 {
-	char const	*px;
-	char		*tmp;
-	char		*res;
+	char	*joined;
 
-	if (prefix_len == 0)
-		return (ft_strjoin(zeros, old));
-	if (f->format == F_HEX_UP)
-		px = "0X";
-	else
-		px = "0x";
-	tmp = ft_strjoin(px, zeros);
-	if (!tmp)
-		return (NULL);
-	res = ft_strjoin(tmp, old);
-	free(tmp);
-	return (res);
+	joined = ft_my_strjoin(zeros, f->str);
+	free(zeros);
+	if (joined == NULL)
+		return (0);
+	free(f->str);
+	f->str = joined;
+	return (1);
 }
 
-void	ft_zero_pad(t_frags *frags)
+void	ft_zero_pad(t_frags *f)
 {
-	size_t	prefix;
+	size_t	prefix_len;
 	size_t	pad_len;
 	char	*zeros;
-	char	*newstr;
 
-	prefix = get_prefix_len(frags);
-	if (prefix == 2 && frags->str_count >= 2)
-		frags->str_count -= 2;
-	if (frags->width > frags->str_count + prefix)
-		pad_len = frags->width - (frags->str_count + prefix);
-	else
-		pad_len = 0;
+	if (f->str == NULL)
+		return ;
+	prefix_len = 0;
+	if (f->prefix != NULL)
+		prefix_len = ft_my_strlen(f->prefix);
+	pad_len = get_pad_len(f, prefix_len);
 	if (pad_len == 0)
 		return ;
-	zeros = make_zeros(pad_len);
-	if (!zeros)
+	zeros = create_zeros(pad_len);
+	if (zeros == NULL)
 		return ;
-	newstr = join_pad(frags->str + prefix, zeros, frags, prefix);
-	free(zeros);
-	if (!newstr)
+	if (!join_zeros(f, zeros))
 		return ;
-	free(frags->str);
-	frags->str = newstr;
-	frags->str_count = ft_my_strlen(newstr);
+	f->str_count += pad_len;
 }

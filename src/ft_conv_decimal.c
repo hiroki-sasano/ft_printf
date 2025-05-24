@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:03:14 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/14 14:08:37 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/20 18:53:04 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,5 @@
 
 char	*ft_conv_decimal(int n)
 {
-	return (ft_itoa(n));
+	return (ft_my_itoa(n));
 }

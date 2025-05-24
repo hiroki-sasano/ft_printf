@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:52:10 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/18 01:26:55 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 06:40:08 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,13 @@ void	ft_apply_width(t_frags *frags)
 		return ;
 	ft_memset(pad_str, ' ', pad);
 	pad_str[pad] = '\0';
-	tmp = ft_strjoin(pad_str, frags->str);
+	if (frags->f_minus)
+		tmp = ft_my_strjoin(frags->str, pad_str);
+	else
+		tmp = ft_my_strjoin(pad_str, frags->str);
 	free(pad_str);
+	if (!tmp)
+		return;
 	free(frags->str);
 	frags->str = tmp;
 	frags->str_count = ft_my_strlen(tmp);

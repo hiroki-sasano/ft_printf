@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:58:23 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:08:40 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 06:18:31 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg);
 ssize_t	ft_handle_format(const char *format, size_t i, va_list *arg,
 			t_frags *frags);
 int		ft_printf_bonus(va_list *arg, const char *format, t_frags *frags);
+void	ft_set_prefix(t_frags *frags);
 
 #endif

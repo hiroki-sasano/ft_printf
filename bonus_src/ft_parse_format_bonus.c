@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 23:39:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/18 02:08:02 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 07:59:00 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,16 @@ static void	handle_specifier(t_frags *frags, char spec)
 	ft_spec_type(frags, spec);
 	if (frags->format == F_PCT)
 	{
-		if (frags->str)
+		if (frags->str != NULL)
 			free(frags->str);
 		frags->str = ft_my_strdup("%");
+		if (frags->str == NULL)
+			return ;
 		frags->str_count = 1;
+		frags->f_plus = 0;
+		frags->f_space = 0;
+		frags->f_hash = 0;
+		frags->prec_on = 0;
 	}
 }
 

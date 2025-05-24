@@ -1,32 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_conv_pointer.c                                  :+:      :+:    :+:   */
+/*   ft_my_strjoin.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/13 20:19:44 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/20 18:50:00 by hisasano         ###   ########.fr       */
+/*   Created: 2025/05/20 18:48:25 by hisasano          #+#    #+#             */
+/*   Updated: 2025/05/20 18:57:09 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdint.h>
 #include <stdlib.h>
 
-char	*ft_conv_pointer(void *ptr)
+char	*ft_my_strjoin(char const *s1, char const *s2)
 {
-	uintptr_t	addr;
-	char		*hex;
-	char		*result;
+	size_t	i;
+	size_t	j;
+	char	*str;
 
-	if (!ptr)
-		return (ft_my_strdup("(nil)"));
-	addr = (uintptr_t)ptr;
-	hex = ft_utoa_base(addr, "0123456789abcdef");
-	if (!hex)
+	if (s1 == NULL || s2 == NULL)
 		return (NULL);
-	result = ft_my_strjoin("0x", hex);
-	free(hex);
-	return (result);
+	if (ft_my_strlen(s1) > SIZE_MAX - ft_my_strlen(s2) - 1)
+		return (NULL);
+	str = (char *)malloc(ft_my_strlen(s1) + ft_my_strlen(s2) + 1);
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (s1[i] != '\0')
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j] != '\0')
+	{
+		str[i + j] = s2[j];
+		j++;
+	}
+	str[i + j] = '\0';
+	return (str);
 }
