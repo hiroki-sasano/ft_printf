@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:23:14 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/14 12:09:33 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 10:19:09 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,7 @@ ssize_t	ft_do_write(int fd, const void *buf, size_t len)
 	{
 		ret = write(fd, (const char *)buf + written, len - written);
 		if (ret == -1)
-		{
-			if (errno == EINTR)
-				continue ;
 			return (-1);
-		}
 		written += ret;
 	}
 	return ((ssize_t)written);

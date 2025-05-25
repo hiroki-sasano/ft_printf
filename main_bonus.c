@@ -153,7 +153,7 @@ printf("STD mix flags      |");       s_ret = printf("[%-#08x]\n", 0x2a);
 printf("FT  mix flags      |");       f_ret = ft_printf("[%-#08x]\n", 0x2a);
 printf("R: %d %d\n\n", s_ret, f_ret);
 
-printf("STD combo full     |");       s_ret = printf("[% -+#20.10d]\n", 12345);
+printf("STD combo full     |");          s_ret = printf("[% -+#20.10d]\n", 12345);
 printf("FT  combo full     |");       f_ret = ft_printf("[% -+#20.10d]\n", 12345);
 printf("R: %d %d\n", s_ret, f_ret);
 

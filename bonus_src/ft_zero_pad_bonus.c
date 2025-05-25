@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:04:11 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 08:23:29 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 08:50:56 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,10 @@ void	ft_zero_pad(t_frags *f)
 	size_t	pad_len;
 	char	*zeros;
 
+	if (!(f->format == F_DEC || f->format == F_INT
+		|| f->format == F_UINT || f->format == F_HEX_LOW
+		|| f->format == F_HEX_UP || f->format == F_PTR))
+		 return ;
 	if (f->str == NULL)
 		return ;
 	prefix_len = 0;

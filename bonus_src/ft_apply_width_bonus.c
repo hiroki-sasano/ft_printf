@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:52:10 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 06:40:08 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 11:09:03 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,41 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-void	ft_apply_width(t_frags *frags)
+static char	*make_pad(size_t len)
 {
-	size_t	pad;
-	char	*pad_str;
-	char	*tmp;
+	char	*pad;
 
-	if (!frags->str)
+	pad = malloc(len + 1);
+	if (pad == NULL)
+		return (NULL);
+	ft_memset(pad, ' ', len);
+	pad[len] = '\0';
+	return (pad);
+}
+
+void	ft_apply_width(t_frags *f)
+{
+	size_t	prefix_len, pad_len;
+	char	*pad, *joined;
+
+	if (!f->str || (f->format == F_CHAR && f->str[0] == '\0'))
 		return ;
-	if (frags->width > frags->str_count)
-		pad = frags->width - frags->str_count;
+	prefix_len = 0;
+	if (f->prefix)
+		prefix_len = ft_my_strlen(f->prefix);
+	if (f->width <= f->str_count + prefix_len)
+		return ;
+	pad_len = f->width - (f->str_count + prefix_len);
+	if (!(pad = make_pad(pad_len)))
+		return ;
+	if (f->f_minus)
+		joined = ft_my_strjoin(f->str, pad);
 	else
-		pad = 0;
-	if (pad == 0)
+		joined = ft_my_strjoin(pad, f->str);
+	free(pad);
+	if (!joined)
 		return ;
-	pad_str = malloc(pad + 1);
-	if (!pad_str)
-		return ;
-	ft_memset(pad_str, ' ', pad);
-	pad_str[pad] = '\0';
-	if (frags->f_minus)
-		tmp = ft_my_strjoin(frags->str, pad_str);
-	else
-		tmp = ft_my_strjoin(pad_str, frags->str);
-	free(pad_str);
-	if (!tmp)
-		return;
-	free(frags->str);
-	frags->str = tmp;
-	frags->str_count = ft_my_strlen(tmp);
+	free(f->str);
+	f->str = joined;
+	f->str_count += pad_len;
 }

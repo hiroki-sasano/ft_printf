@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:08:25 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 06:58:36 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 09:19:19 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,35 @@ static int	handle_zero_prec_zero_val(t_frags *frags)
 	return (0);
 }
 
-static int	handle_string_precision(t_frags *frags)
+static int	handle_string_precision(t_frags *f)
 {
 	char	*tmp;
 
-	if (frags->format == F_STR && frags->precision >= 0
-		&& (size_t)frags->precision < frags->str_count)
+	if (f->format == F_STR && f->str_count == 6 && !ft_strncmp(f->str, "(null)",
+			6))
 	{
-		tmp = ft_substr(frags->str, 0, frags->precision);
+		if (f->precision == 0)
+		{
+			free(f->str);
+			f->str = ft_my_strdup("");
+			f->str_count = 0;
+			return (1);
+		}
+	}
+	if (f->format == F_STR && f->precision >= 0
+		&& (size_t)f->precision < f->str_count)
+	{
+		tmp = ft_substr(f->str, 0, f->precision);
 		if (!tmp)
 			return (1);
-		free(frags->str);
-		frags->str = tmp;
-		frags->str_count = frags->precision;
+		free(f->str);
+		f->str = tmp;
+		f->str_count = f->precision;
 		return (1);
 	}
 	return (0);
 }
 
-/*
- * precision が「**数字部分**を何桁にするか」を示す点に合わせて，
- * ① 先頭の符号／0x を **prefix** として切り分ける
- * ② digits_len = そのほかの数字だけの長さ
- * ③ zero_len  = precision - digits_len で決定
- * ④ prefix → 0パディング → 数字 という順で連結
- * 最後に frags->str_count を更新します。
- */
 static void	apply_numeric_zero_pad(t_frags *f)
 {
 	size_t	zero_len;
@@ -71,10 +74,7 @@ static void	apply_numeric_zero_pad(t_frags *f)
 	if (zeros == NULL)
 		return ;
 	ft_memset(zeros, '0', zero_len);
-	if (f->prefix != NULL)
-		tmp = ft_my_strjoin(f->prefix, zeros);
-	else
-		tmp = ft_my_strdup(zeros);
+	tmp = ft_my_strdup(zeros);
 	if (tmp == NULL)
 	{
 		free(zeros);
@@ -90,8 +90,28 @@ static void	apply_numeric_zero_pad(t_frags *f)
 	f->str_count = f->precision;
 }
 
+static int	null_str_with_prec(t_frags *f)
+{
+	if (f->format == F_STR && f->str && !ft_strncmp(f->str, "(null)", 6)
+		&& f->prec_on)
+	{
+		free(f->str);
+		if (f->precision < 0 || f->precision >= 6)
+			f->str = ft_my_strdup("(null)");
+		else
+			f->str = ft_my_strdup("");
+		if (f->str == NULL)
+			return (1);
+		f->str_count = ft_my_strlen(f->str);
+		return (1);
+	}
+	return (0);
+}
+
 void	ft_apply_prcn(t_frags *frags)
 {
+	if (null_str_with_prec(frags))
+		return ;
 	if (!frags->str)
 		return ;
 	if (handle_zero_prec_zero_val(frags))

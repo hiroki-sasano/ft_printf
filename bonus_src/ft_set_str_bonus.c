@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 23:35:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 20:48:57 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 10:57:23 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,31 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-void	ft_set_str(t_frags *frags, const char *format, size_t start)
+void	ft_set_str(t_frags *f, const char *fmt, size_t start)
 {
 	size_t	i;
-	char	*temp;
+	size_t	j;
+	size_t	alloc;
+	char	*dst;
 
-	temp = (char *)malloc(sizeof(char) * (frags->format_len + 1));
-	if (!temp)
+	alloc = f->format_len + 1;
+	if (f->f_add0)
+		alloc += 1;
+	dst = malloc(alloc);
+	if (dst == NULL)
 		return ;
 	i = 0;
-	while (i < frags->format_len && format[start + i] != '\0')
+	j = 0;
+	while (i < f->format_len && fmt[start + i])
 	{
-		temp[i] = format[start + i];
+		dst[j++] = fmt[start + i];
+		if (f->f_add0 && fmt[start + i] == '.')
+			dst[j++] = '0';
 		i++;
 	}
-	temp[i] = '\0';
-	if (frags->str)
-		free(frags->str);
-	frags->str = temp;
-	frags->str_count = ft_my_strlen(frags->str);
+	dst[j] = '\0';
+	free(f->str);
+	f->str = dst;
+	f->str_count = j;
+	f->f_add0 = 0;
 }

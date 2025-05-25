@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 23:39:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 07:59:00 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 10:04:13 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,37 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-static size_t	handle_dot(t_frags *frags, const char *fmt, size_t pos)
+size_t	handle_dot(t_frags *f, const char *fmt, size_t pos)
 {
-	frags->prec_on = 1;
-	return (ft_parse_prec(frags, fmt, pos) - 1);
+	f->prec_on = 1;
+	if (ft_isdigit((unsigned char)fmt[pos + 1]))
+		return (ft_parse_prec(f, fmt, pos) - 1);
+	f->precision = 0;
+	f->f_add0 = 1; 
+	return (0);
 }
-
-static void	handle_specifier(t_frags *frags, char spec)
+void	handle_specifier(t_frags *f, char spec)
 {
-	ft_spec_type(frags, spec);
-	if (frags->format == F_PCT)
+	ft_spec_type(f, spec);
+	if (f->format == F_PCT)
 	{
-		if (frags->str != NULL)
-			free(frags->str);
-		frags->str = ft_my_strdup("%");
-		if (frags->str == NULL)
+		if (f->str)
+			free(f->str);
+		f->str = ft_my_strdup("%");
+		if (f->str == NULL)
 			return ;
-		frags->str_count = 1;
-		frags->f_plus = 0;
-		frags->f_space = 0;
-		frags->f_hash = 0;
-		frags->prec_on = 0;
+		f->str_count = 1;
+		f->width = 0;
+		f->f_minus = 0;
+		f->f_zero = 0;
+		f->f_plus = 0;
+		f->f_space = 0;
+		f->f_hash = 0;
+		f->prec_on = 0;
 	}
 }
 
-static size_t	format_loop(t_frags *frags, const char *fmt, size_t start)
+static size_t	format_loop(t_frags *f, const char *fmt, size_t start)
 {
 	size_t	i;
 	char	c;
@@ -47,14 +53,14 @@ static size_t	format_loop(t_frags *frags, const char *fmt, size_t start)
 	while (fmt[start + i])
 	{
 		c = fmt[start + i];
-		ft_set_flag(frags, c);
-		if (!frags->prec_on && ft_isdigit(c))
-			i += ft_parse_width(frags, fmt, start + i) - 1;
+		ft_set_flag(f, c);
+		if (!f->prec_on && ft_isdigit(c))
+			i += ft_parse_width(f, fmt, start + i) - 1;
 		else if (c == '.')
-			i += handle_dot(frags, fmt, start + i);
+			i += handle_dot(f, fmt, start + i);
 		else if (ft_is_spec(c))
 		{
-			handle_specifier(frags, c);
+			handle_specifier(f, c);
 			if (c == '%' && fmt[start + i + 1] == '%')
 				i++;
 			i++;

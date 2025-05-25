@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:04:44 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 07:42:35 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 08:55:58 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ static int	append_pad(t_frags *f, char *pad)
 	f->str = joined;
 	return (1);
 }
-
-/* ========================  public interface  ============================= */
 
 void	ft_left_align(t_frags *f)
 {

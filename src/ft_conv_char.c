@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 19:59:20 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/14 15:54:23 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 09:33:40 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*ft_conv_char(char c)
 {
 	char	*str;
 
+	if (c == '\0')
+		return (ft_my_strdup("\0"));
 	str = malloc(2);
 	if (!str)
 		return (NULL);

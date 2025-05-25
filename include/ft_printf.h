@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 21:42:23 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 06:20:50 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/25 10:02:15 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_frags
 	int				precision;
 	t_argtype		format;
 	char			*prefix;
+	char			f_add0;
 	char			*str;
 	size_t			str_count;
 	size_t			format_len;
