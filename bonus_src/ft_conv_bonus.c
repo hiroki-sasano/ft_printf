@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:44:56 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 07:24:36 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:49:56 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,4 @@ void	ft_conv_bonus(t_frags *frags, va_list *arg)
 		frags->str = str;
 		set_strlen(frags, str);
 	}
-	ft_set_prefix(frags);
-	ft_apply(frags);
 }

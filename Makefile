@@ -6,7 +6,7 @@
 #    By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/09 17:34:47 by hisasano          #+#    #+#              #
-#    Updated: 2025/05/25 07:04:37 by hisasano         ###   ########.fr        #
+#    Updated: 2025/05/27 19:52:53 by hisasano         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,12 +21,13 @@ SRC_M  = ft_printf.c \
           ft_my_strdup.c ft_my_strlen.c ft_my_itoa.c ft_my_strjoin.c
 
 SRC_B  = ft_printf_bonus.c \
-          ft_add_sign_or_space_bonus.c ft_apply_bonus.c \
-          ft_apply_prcn_bonus.c ft_apply_width_bonus.c \
+          ft_add_sign_or_space_bonus.c ft_apply_prcn_bonus.c \
+          ft_apply_width_bonus.c ft_parse_width_bonus.c \
           ft_hash_join_bonus.c ft_left_align_bonus.c ft_zero_pad_bonus.c \
-          ft_parse_width_bonus.c ft_parse_prec_bonus.c ft_parse_format_bonus.c \
+          ft_parse_prec_bonus.c ft_parse_format_bonus.c \
           ft_set_flagc_bonus.c ft_set_str_bonus.c ft_conv_bonus.c \
-          ft_handle_format_bonus.c ft_set_prefix_bonus.c
+          ft_handle_format_bonus.c ft_apply_width_char_bonus.c \
+		  ft_app_width_lr.c ft_app_num_zeropad_bonus.c
 
 SRCDIR       := src
 BONUSDIR     := bonus_src
@@ -51,7 +52,7 @@ else
 	CFLAGS += -DBONUS_MODE
 endif
 
-OBJS := $(addprefix $(OBJDIR)/,$(notdir $(SRCS:.c=.o))) #
+OBJS := $(addprefix $(OBJDIR)/,$(notdir $(SRCS:.c=.o)))
 
 vpath %.c $(SRCDIR) $(BONUSDIR)
 
@@ -73,6 +74,7 @@ $(NAME): $(LIBFT) $(OBJS)
 	@cd ar_tmp && $(AR) x libft.a
 	@$(AR) $(ARFLAGS) $@ $(OBJS) ar_tmp/*.o
 	@$(RMDIR) ar_tmp
+	@echo "Archive created: $(NAME)"
 
 test: re
 	$(CC) -I$(INCDIR) -I$(LIBFTDIR)/include -I$(LIBFTDIR) \
@@ -87,6 +89,9 @@ testbonus: fclean bonus
 
 testbonusrun: testbonus
 	./test_bonus
+
+bonus_lib: CFLAGS += -DBONUS_MODE
+bonus_lib: fclean bonus
 
 clean:
 	$(MAKE) -C $(LIBFTDIR) clean

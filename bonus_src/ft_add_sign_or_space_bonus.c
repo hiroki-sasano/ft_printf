@@ -6,13 +6,12 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:10:03 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 07:55:26 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 19:52:09 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include "ft_printf_bonus.h"
-#include <stdlib.h>
 
 void	ft_add_sign_or_space(t_frags *f)
 {

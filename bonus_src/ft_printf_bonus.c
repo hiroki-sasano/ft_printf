@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 17:58:27 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/17 23:17:44 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:01:11 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ft_printf_bonus(va_list *arg, const char *format, t_frags *frags)
 	{
 		if (format[i] == '%')
 		{
-			ret_size = ft_handle_format(format, i, arg, frags);
+			ret_size = ft_handle_format(frags, format, i, arg);
 			if (ret_size == -1)
 				return (-1);
 			total_size += ret_size;

@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:48:38 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/16 17:48:58 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:34:48 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ size_t	ft_parse_prec(t_frags *frags, const char *format, size_t start)
 {
 	size_t	i;
 
+	frags->prec_on = 1;
 	if (!ft_isdigit(format[start + 1]))
 	{
 		frags->precision = 0;

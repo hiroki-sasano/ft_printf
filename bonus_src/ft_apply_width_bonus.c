@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 17:52:10 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 11:09:03 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 20:22:15 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,56 @@
 #include "ft_printf_bonus.h"
 #include <stdlib.h>
 
-static char	*make_pad(size_t len)
+static char	*make_space_pad(int pad_len)
 {
+	int		i;
 	char	*pad;
 
-	pad = malloc(len + 1);
-	if (pad == NULL)
+	i = 0;
+	pad = malloc(pad_len + 1);
+	if (!pad)
 		return (NULL);
-	ft_memset(pad, ' ', len);
-	pad[len] = '\0';
+	while (i < pad_len)
+	{
+		pad[i] = ' ';
+		i++;
+	}
+	pad[pad_len] = '\0';
 	return (pad);
+}
+
+static size_t	get_prefix_len(t_frags *f)
+{
+	if (f->prefix)
+		return (ft_my_strlen(f->prefix));
+	return (0);
 }
 
 void	ft_apply_width(t_frags *f)
 {
-	size_t	prefix_len, pad_len;
-	char	*pad, *joined;
+	size_t	prefix_len;
+	int		pad_len;
+	char	*pad;
 
-	if (!f->str || (f->format == F_CHAR && f->str[0] == '\0'))
+	if (f->format == F_PCT)
 		return ;
-	prefix_len = 0;
-	if (f->prefix)
-		prefix_len = ft_my_strlen(f->prefix);
-	if (f->width <= f->str_count + prefix_len)
+	if (f->format == F_CHAR)
+	{
+		ft_apply_width_char(f);
 		return ;
-	pad_len = f->width - (f->str_count + prefix_len);
-	if (!(pad = make_pad(pad_len)))
+	}
+	if (f->f_zero && !f->f_minus && !f->prec_on)
+	{
+		ft_zero_pad(f);
 		return ;
-	if (f->f_minus)
-		joined = ft_my_strjoin(f->str, pad);
-	else
-		joined = ft_my_strjoin(pad, f->str);
+	}
+	prefix_len = get_prefix_len(f);
+	pad_len = (int)f->width - ((int)f->str_count + (int)prefix_len);
+	if (pad_len <= 0)
+		return ;
+	pad = make_space_pad(pad_len);
+	if (!pad)
+		return ;
+	ft_app_width_lr(f, pad);
 	free(pad);
-	if (!joined)
-		return ;
-	free(f->str);
-	f->str = joined;
-	f->str_count += pad_len;
 }

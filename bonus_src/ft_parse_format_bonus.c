@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 23:39:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 10:04:13 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 20:01:49 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ size_t	handle_dot(t_frags *f, const char *fmt, size_t pos)
 	if (ft_isdigit((unsigned char)fmt[pos + 1]))
 		return (ft_parse_prec(f, fmt, pos) - 1);
 	f->precision = 0;
-	f->f_add0 = 1; 
+	f->f_add0 = 1;
 	return (0);
 }
+
 void	handle_specifier(t_frags *f, char spec)
 {
 	ft_spec_type(f, spec);
@@ -34,13 +35,6 @@ void	handle_specifier(t_frags *f, char spec)
 		if (f->str == NULL)
 			return ;
 		f->str_count = 1;
-		f->width = 0;
-		f->f_minus = 0;
-		f->f_zero = 0;
-		f->f_plus = 0;
-		f->f_space = 0;
-		f->f_hash = 0;
-		f->prec_on = 0;
 	}
 }
 

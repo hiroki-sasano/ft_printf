@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:04:44 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 08:55:58 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:31:41 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,10 @@ void	ft_left_align(t_frags *f)
 
 	if (f->str == NULL)
 		return ;
-	prefix_len = (f->prefix != NULL) ? ft_my_strlen(f->prefix) : 0;
+	if (f->prefix)
+		prefix_len = ft_my_strlen(f->prefix);
+	else
+		prefix_len = 0;
 	pad_len = get_pad_len(f, prefix_len);
 	if (pad_len == 0)
 		return ;

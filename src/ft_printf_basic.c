@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:40:46 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 04:22:36 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:30:14 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,26 @@
 #include <unistd.h>
 
 static int	ft_handle_percent(t_frags *frags, va_list *arg, const char *format,
-	size_t *i)
+		size_t *i)
 {
-ssize_t	ret_size;
+	ssize_t	ret_size;
 
-(*i)++;
-if (format[*i] == '\0')
-	return (-1);
-ft_spec_type(frags, format[*i]);
-ft_conv(frags, arg);
-ret_size = ft_do_write(1, frags->str, frags->str_count);
-if (ret_size == -1)
-{
+	(*i)++;
+	if (format[*i] == '\0')
+		return (-1);
+	ft_spec_type(frags, format[*i]);
+	ft_conv(frags, arg);
+	ret_size = ft_do_write(1, frags->str, frags->str_count);
+	if (ret_size == -1)
+	{
+		free(frags->str);
+		frags->str = NULL;
+		return (-1);
+	}
 	free(frags->str);
 	frags->str = NULL;
-	return (-1);
-}
-free(frags->str);
-frags->str = NULL;
-(*i)++;
-return (ret_size);
+	(*i)++;
+	return (ret_size);
 }
 
 int	ft_printf_basic(va_list *arg, const char *format, t_frags *frags)

@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:08:25 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 09:19:19 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 19:56:07 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,44 +59,16 @@ static int	handle_string_precision(t_frags *f)
 	return (0);
 }
 
-static void	apply_numeric_zero_pad(t_frags *f)
-{
-	size_t	zero_len;
-	char	*zeros;
-	char	*tmp;
-	char	*joined;
-
-	if (f->format == F_STR || f->format == F_CHAR || f->precision <= 0
-		|| (size_t)f->precision <= f->str_count)
-		return ;
-	zero_len = f->precision - f->str_count;
-	zeros = ft_calloc(zero_len + 1, 1);
-	if (zeros == NULL)
-		return ;
-	ft_memset(zeros, '0', zero_len);
-	tmp = ft_my_strdup(zeros);
-	if (tmp == NULL)
-	{
-		free(zeros);
-		return ;
-	}
-	joined = ft_my_strjoin(tmp, f->str);
-	free(zeros);
-	free(tmp);
-	free(f->str);
-	if (joined == NULL)
-		return ;
-	f->str = joined;
-	f->str_count = f->precision;
-}
-
 static int	null_str_with_prec(t_frags *f)
 {
-	if (f->format == F_STR && f->str && !ft_strncmp(f->str, "(null)", 6)
+	int	len;
+
+	len = ft_my_strlen("(null)");
+	if (f->format == F_STR && f->str && !ft_strncmp(f->str, "(null)", len)
 		&& f->prec_on)
 	{
 		free(f->str);
-		if (f->precision < 0 || f->precision >= 6)
+		if (f->precision < 0 || f->precision >= len)
 			f->str = ft_my_strdup("(null)");
 		else
 			f->str = ft_my_strdup("");
@@ -118,7 +90,7 @@ void	ft_apply_prcn(t_frags *frags)
 		return ;
 	if (handle_string_precision(frags))
 		return ;
-	apply_numeric_zero_pad(frags);
+	ft_app_num_zeropad(frags);
 }
 
 // if (frags->precision <= 0 || (size_t)frags->precision <= frags->str_count)

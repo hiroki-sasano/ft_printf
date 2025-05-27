@@ -6,7 +6,7 @@
 /*   By: hisasano <hisasano@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 16:40:07 by hisasano          #+#    #+#             */
-/*   Updated: 2025/05/25 10:20:45 by hisasano         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:42:18 by hisasano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,10 @@ static ssize_t	write_all(t_frags *f)
 		return (-1);
 	if (write_chunk(f->str + lead, f->str_count - lead) == -1)
 		return (-1);
-	return (n + (f->prefix ? ft_my_strlen(f->prefix) : 0)
-		+ (f->str_count - lead));
+	if (f->prefix)
+		return (n + ft_my_strlen(f->prefix) + (f->str_count - lead));
+	else
+		return (n + (f->str_count - lead));
 }
 
 static void	free_frags(t_frags *f)
@@ -48,7 +50,25 @@ static void	free_frags(t_frags *f)
 	f->prefix = NULL;
 }
 
-ssize_t	ft_handle_format(const char *fmt, size_t i, va_list *ap, t_frags *f)
+static void	ft_set_prefix(t_frags *f)
+{
+	char	*tmp;
+
+	if ((f->format == F_DEC || f->format == F_INT) && f->str
+		&& (f->str[0] == '-' || f->str[0] == '+'))
+	{
+		if (f->str[0] == '-')
+			f->prefix = ft_my_strdup("-");
+		else
+			f->prefix = ft_my_strdup("+");
+		tmp = ft_my_strdup(f->str + 1);
+		free(f->str);
+		f->str = tmp;
+		f->str_count = ft_my_strlen(f->str);
+	}
+}
+
+ssize_t	ft_handle_format(t_frags *f, const char *fmt, size_t i, va_list *ap)
 {
 	ssize_t	total;
 
@@ -58,6 +78,13 @@ ssize_t	ft_handle_format(const char *fmt, size_t i, va_list *ap, t_frags *f)
 	ft_conv_bonus(f, ap);
 	if (f->str == NULL)
 		return (0);
+	ft_set_prefix(f);
+	ft_hash_join(f);
+	ft_add_sign_or_space(f);
+	if (f->format == F_CHAR)
+		f->str_count = 1;
+	ft_apply_prcn(f);
+	ft_apply_width(f);
 	total = write_all(f);
 	if (total == -1)
 		return (free_frags(f), -1);
